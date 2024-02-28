@@ -1,0 +1,4 @@
+# Pre-built artifacts
+*.a
+*.so
+*.elf

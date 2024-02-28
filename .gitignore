@@ -1,0 +1,10 @@
+*.so
+*.bin
+*.dat
+*.elf
+*.efi
+*.img
+*.zip
+*.tar*
+
+build/
