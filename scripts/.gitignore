@@ -1,0 +1,5 @@
+# Scripts
+__broken*.sh
+
+# Caches
+__pycache__/
