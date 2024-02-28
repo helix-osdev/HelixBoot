@@ -11,6 +11,15 @@ from gpt_image.partition import Partition
 from gpt_image.partition import PartitionType
 
 
+p = argparse.ArgumentParser()
+
+p.add_argument("-c", "--create", action="store_true")
+p.add_argument("-n", "--name", action="store")
+p.add_argument("-s", "--size", action="store")
+
+args = p.parse_args()
+
+
 
 
 class DiskUtil:
@@ -49,10 +58,21 @@ class DiskUtil:
 def main():
     disk = DiskUtil()
 
-    disk.disk_open("test")
-    disk.disk_create(16 * 1024 * 1024)
-    disk.disk_commit()
+    if args.create:
+        if args.name == None:
+            print("Invalid disk name!")
+            sys.exit(-1)
 
+        if args.size == 0:
+            print("Invalid disk size!")
+            sys.exit(-1)
+        
+        disk_size = int(args.size)
+
+        disk.disk_open(args.name)
+        disk.disk_create(disk_size)
+
+    disk.disk_commit()
     sys.exit(0)
 
 
