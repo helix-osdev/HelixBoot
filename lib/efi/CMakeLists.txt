@@ -18,7 +18,7 @@ target_sources(${HELIX_TARGET} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/strrep.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/is_alpha.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/is_digit.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/malloc.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/alloc.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/free.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/toupper.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/tolower.c"
