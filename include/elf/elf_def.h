@@ -140,9 +140,9 @@ typedef struct {
 } elf_dyn_t;
 
 typedef struct {
-	efi_file_proto_t	*fd;
+	efi_file_proto_t	*elf_fd;
 	elf64_ehdr_t		*elf_hdr;
-	uint64_t			elf_size;
+	elf64_phdr_t		**phdrs;
 } elf_fd_t;
 
 #endif

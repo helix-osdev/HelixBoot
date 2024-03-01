@@ -2,7 +2,6 @@
 #define ELF_API_H
 
 #include <efi.h>
-#include <bootinfo.h>
 #include <elf/elf_def.h>
 
 

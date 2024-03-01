@@ -10,16 +10,16 @@
 elf_fd_t *elf_open(char16_t *name) {
 	elf_fd_t *elf = alloc(sizeof(elf_fd_t));
 
-	elf->fd = fopen(name);
+	elf->elf_fd = fopen(name);
 	elf->elf_hdr = alloc(sizeof(elf64_ehdr_t));
 
-	if (!elf->fd) {
+	if (!elf->elf_fd) {
 		printf(L"Failed to open %s\n", name);
 		return NULL;
 	}	
 
-	fseek(elf->fd, 0);
-	fread(elf->fd, elf->elf_hdr, sizeof(elf64_ehdr_t));
+	fseek(elf->elf_fd, 0);
+	fread(elf->elf_fd, elf->elf_hdr, sizeof(elf64_ehdr_t));
 
 	// Validate that this is an ELF executable
 	// otherwise reject it

@@ -30,24 +30,32 @@ static uint64_t elf_get_shdr_size(elf_fd_t *fd) {
 	return shdr_size;
 }
 
+static elf64_phdr_t *elf_for_each_phdr(elf_fd_t *fd, uint64_t idx) {
+	elf64_phdr_t *phdr = NULL;
+
+	phdr = (elf64_phdr_t *)&fd->phdrs[idx];
+
+	return phdr;
+}
 
 static efi_status_t elf_load_phdrs(elf_fd_t *fd) {
 	efi_status_t ret = 0;
-	elf64_phdr_t **phdrs = NULL;
 	uint64_t phdr_size = 0, i = 0;
 
-	phdr_size = elf_get_phdr_size(fd);
-	phdrs = alloc(phdr_size);
 
-	if (!phdrs) {
+
+	phdr_size = elf_get_phdr_size(fd);
+	fd->phdrs = alloc(phdr_size);
+
+	if (!fd->phdrs) {
 		return EFI_OUT_OF_RESOURCES;
 	}
 
-	fseek(fd->fd, fd->elf_hdr->e_phoff);
-	fread(fd->fd, phdrs, phdr_size);
+	fseek(fd->elf_fd, fd->elf_hdr->e_phoff);
+	fread(fd->elf_fd, fd->phdrs, phdr_size);
 
 	for (i = 0; i < fd->elf_hdr->e_phnum; i++) {
-		elf64_phdr_t *phdr = (elf64_phdr_t *)&phdrs[i];
+		elf64_phdr_t *phdr = elf_for_each_phdr(fd, i);
 
 		if (phdr->p_type != PT_LOAD) {
 			// Only handle program headers
@@ -69,20 +77,10 @@ static efi_status_t elf_load_phdrs(elf_fd_t *fd) {
 			continue;
 		}
 
-		ret = BS->allocate_pages(AllocateAddress,
-				EfiLoaderData,
-				EFI_SIZE_TO_PAGES(phdr->p_memsz),
-				(uint64_t *)&phys_segment);
+		phys_segment = (uint64_t)alloc_pages(phdr->p_filesz);	
 
-		if (EFI_ERROR(ret)) {
-			printf(L"Failed to allocate phys segment: %x! (%r)\n", phys_segment, ret);
-
-			free(phdrs);
-			return ret;
-		}
-
-		fseek(fd->fd, phdr->p_offset);
-		fread(fd->fd, (uint64_t *)phys_segment, phdr->p_filesz);
+		fseek(fd->elf_fd, phdr->p_offset);
+		fread(fd->elf_fd, (uint64_t *)phys_segment, phdr->p_filesz);
 
 		if (phdr->p_filesz < phdr->p_memsz) {
 			uint64_t off = phdr->p_filesz;
@@ -90,18 +88,15 @@ static efi_status_t elf_load_phdrs(elf_fd_t *fd) {
 
 			memset((uint64_t *)phys_segment + off, 0, diff);
 		}
-
-		printf(L"ELF: loaded segment %x\n", phys_segment);
 	}
 
-	free(phdrs);
 	return EFI_SUCCESS;
 }
 
 efi_status_t elf_load(elf_fd_t *fd) {
 	efi_status_t ret = 0;
 
-	if (!fd->fd) {
+	if (!fd->elf_fd) {
 		return EFI_NOT_FOUND;
 	}
 
