@@ -17,6 +17,10 @@ extern efi_text_output_proto_t	*stderr;
 
 
 
+
+
+
+
 void initialize_libs(efi_handle_t img_handle, efi_system_table_t *sys_tbl);
 int32_t guidcmp(efi_guid_t *g1, efi_guid_t *g2);
 efi_status_t is_digit(char16_t ch);
@@ -27,8 +31,9 @@ void putc(char16_t ch);
 void puts(char16_t *string);
 void clear_screen(void);
 void sleep(uint64_t	seconds);
-void *malloc(uint64_t length);
-void *realloc(void *buf, uint64_t old_len, uint64_t len);
+void *alloc(uint64_t length);
+void *alloc_page(void);
+void *alloc_pages(uint64_t length);
 void free(void *buf);
 void memcpy(void *dest, void *source, uint64_t length);
 void memset(void *buf, uint8_t val, uint64_t length);
