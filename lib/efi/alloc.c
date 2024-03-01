@@ -34,7 +34,7 @@ void *alloc_page(void) {
 		return NULL;
 	}
 
-	return buf:
+	return buf;
 }
 
 void *alloc_pages(uint64_t length) {
