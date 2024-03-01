@@ -48,7 +48,7 @@ efi_status_t get_memory_map(efi_memory_map_t *m) {
 	}
 
 	map_size += 8192;
-	map = malloc(map_size);
+	map = alloc(map_size);
 
 	ret = BS->get_memory_map(&map_size,
 			map,
@@ -117,7 +117,7 @@ efi_status_t exit_boot_services(efi_handle_t img_handle, efi_memory_map_t *m) {
 			free(map);
 		}
 
-		map = malloc(map_size);
+		map = alloc(map_size);
 
 		ret = BS->get_memory_map(&map_size,
 				map,

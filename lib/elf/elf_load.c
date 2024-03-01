@@ -37,7 +37,7 @@ static efi_status_t elf_load_phdrs(elf_fd_t *fd) {
 	uint64_t phdr_size = 0, i = 0;
 
 	phdr_size = elf_get_phdr_size(fd);
-	phdrs = malloc(phdr_size);
+	phdrs = alloc(phdr_size);
 
 	if (!phdrs) {
 		return EFI_OUT_OF_RESOURCES;

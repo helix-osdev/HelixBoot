@@ -8,10 +8,10 @@
 
 
 elf_fd_t *elf_open(char16_t *name) {
-	elf_fd_t *elf = malloc(sizeof(elf_fd_t));
+	elf_fd_t *elf = alloc(sizeof(elf_fd_t));
 
 	elf->fd = fopen(name);
-	elf->elf_hdr = malloc(sizeof(elf64_ehdr_t));
+	elf->elf_hdr = alloc(sizeof(elf64_ehdr_t));
 
 	if (!elf->fd) {
 		printf(L"Failed to open %s\n", name);
