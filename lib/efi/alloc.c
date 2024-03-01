@@ -51,5 +51,5 @@ void *alloc_pages(uint64_t length) {
 		return NULL;
 	}
 
-	return buf:
+	return buf;
 }
