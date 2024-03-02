@@ -24,10 +24,20 @@ efi_status_t elf_load(elf_fd_t *fd) {
 		return EFI_NOT_FOUND;
 	}
 
-	// TODO:
-	// Check ELF type to determine whether to load as
-	// an executable, dynamic object, etc
-	ret = elf_load_phdrs(fd);
+	switch(fd->elf_hdr->e_type) {
+		case ET_NONE:
+			break;
+
+		case ET_REL:
+			break;
+
+		case ET_EXEC:
+			ret = elf_load_phdrs(fd);
+			break;
+
+		case ET_DYN:
+			break;
+	}
 
 	if (EFI_ERROR(ret)) {
 		return ret;
