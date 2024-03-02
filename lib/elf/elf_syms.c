@@ -15,8 +15,8 @@ static uint64_t elf_get_str_table_offset(elf_fd_t *fd) {
 	return offset;
 }
 
-char *elf_get_str_table(elf_fd_t *fd) {
-	char *str_table = NULL;
+char16_t *elf_get_str_table(elf_fd_t *fd) {
+	char16_t *str_table = NULL;
 	uint64_t table_offset = 0, table_size = 0;
 
 	
@@ -32,4 +32,8 @@ char *elf_get_str_table(elf_fd_t *fd) {
 	fread(fd->elf_fd, str_table, table_size);
 
 	return str_table;
+}
+
+char16_t *elf_lookup_symbol(char16_t *sym) {
+	return NULL;
 }
