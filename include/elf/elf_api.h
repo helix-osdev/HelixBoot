@@ -15,4 +15,6 @@ efi_status_t elf_load(elf_fd_t *fd);
 bool elf_validate(elf_fd_t *fd);
 bool elf_is_supported_arch(elf_fd_t *fd);
 
+efi_status_t elf_load_phdrs(elf_fd_t *fd);
+
 #endif
