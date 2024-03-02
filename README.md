@@ -13,4 +13,4 @@ This project goes through frequent changes that may break builds!
 	cmake .. && make; popd`
 
 ### HOW TO RUN:
-	`cd HelixBoot/build; make setup-and-run
+	`cd HelixBoot/build; make setup-and-run`
