@@ -6,7 +6,7 @@ add_custom_target(setup
 
 add_custom_target(run
 	COMMAND
-	${CMAKE_COMMAND} -E env "${HELIX_SCRIPTS}/boot.sh" "${HELIX_EXT}" "${HELIX_BINARY_DIR}"
+	${CMAKE_COMMAND} -E env "${HELIX_SCRIPTS}/boot.sh" "${HELIX_BINARY_DIR}"
 	USES_TERMINAL
 )
 

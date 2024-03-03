@@ -14,13 +14,18 @@ efi_partition_end=264191
 efi_offset=$(($block_size * $efi_partition_start))
 
 
+for i in efi_rom.img efi_vars.img hdd.img; do
+	if [ ! -e $build_dir/$i ]
+	then
+		# Cleanup incase of stale files
+		rm -f $build_dir/$i
 
-# Cleanup from previous run
-rm -f $build_dir/*.img
-
-qemu-img create -f raw $build_dir/efi_rom.img 64M
-qemu-img create -f raw $build_dir/efi_vars.img 64M
-qemu-img create -f raw $build_dir/hdd.img 200M
+		# Create images
+		qemu-img create -f raw $build_dir/efi_rom.img 64M
+		qemu-img create -f raw $build_dir/efi_vars.img 64M
+		qemu-img create -f raw $build_dir/hdd.img 200M
+	fi
+done
 
 sgdisk \
 	--zap-all \
@@ -38,6 +43,15 @@ mformat \
 	-s 63 \
 	-H 0 \
 	-i $build_dir/hdd.img@@$efi_offset
+
+mmd \
+	-i $build_dir/hdd.img@@$efi_offset ::/EFI
+mmd \
+	-i $build_dir/hdd.img@@$efi_offset ::/EFI/BOOT
+
+mcopy \
+	-i $build_dir/hdd.img@@$efi_offset \
+	$build_dir/helix_boot.efi ::/EFI/BOOT/BOOTAA64.efi
 
 mcopy \
 	-i $build_dir/hdd.img@@$efi_offset \
