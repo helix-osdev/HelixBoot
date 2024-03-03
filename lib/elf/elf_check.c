@@ -4,8 +4,8 @@
 
 
 
-efi_status_t elf_check(void *buf) {
-	elf64_ehdr_t *hdr = (elf64_ehdr_t *)buf;
+efi_status_t elf_check(void *elf_data) {
+	elf64_ehdr_t *hdr = (elf64_ehdr_t *)elf_data;
 
 	if (hdr->e_ident[EI_MAG0] != ELFMAG0 &&
 			hdr->e_ident[EI_MAG1] != ELFMAG1 &&
