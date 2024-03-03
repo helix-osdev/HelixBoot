@@ -65,8 +65,6 @@ efi_status_t get_boot_vol(efi_handle_t img_handle) {
 		return ret;
 	}
 
-	printf(L"Mounted EFI volume @ %x\n", efi_root);
-
 	image_base = (uint64_t)img_load->image_base;
 	image_size = (uint64_t)img_load->image_size;
 
