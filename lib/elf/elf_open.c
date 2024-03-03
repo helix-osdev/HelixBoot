@@ -43,10 +43,6 @@ elf_fd_t *elf_open(char16_t *name) {
 	fseek(fd->elf_fd, 0);
 	fread(fd->elf_fd, fd->elf_data, file_size);
 
-	// After the ELF file is read into memory we
-	// no longer need the file descriptor to be open
-	fclose(fd->elf_fd);
-
 	// Validate ELF executable
 	ret = elf_check(fd->elf_data);
 
@@ -56,8 +52,13 @@ elf_fd_t *elf_open(char16_t *name) {
 		// Cleanup data
 		free(fd->elf_info);
 		free(fd->elf_data);
+		fclose(fd->elf_fd);
 		return NULL;
 	}
+
+	// After the ELF file is read into memory we
+	// no longer need the file descriptor to be open
+	fclose(fd->elf_fd);
 
 	return fd;
 }
