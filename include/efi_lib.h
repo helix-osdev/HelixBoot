@@ -49,6 +49,6 @@ efi_status_t vprintf(char16_t *fmt, va_list args);
 efi_status_t vsprintf(char16_t *buf, char16_t *fmt, va_list args);
 efi_status_t printf(char16_t *fmt, ...);
 efi_status_t sprintf(char16_t *buf, char16_t *fmt, ...);
-efi_status_t get_file_info(efi_file_proto_t *fd, efi_file_info_t **info);
+efi_file_info_t *get_file_info(efi_file_proto_t *fd);
 bool grow_buffer(efi_status_t *ret, void **buf, uint64_t length);
 #endif
