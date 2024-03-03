@@ -85,6 +85,22 @@ typedef efi_status_t
 		OUT uint64_t			*position
 		);
 
+typedef efi_status_t
+(EFI_API *efi_file_get_info) (
+		IN efi_file_proto_t		*this,
+		IN efi_guid_t			*info_type,
+		IN OUT uint64_t			*buffer_size,
+		OUT void				*buffer
+		);
+
+typedef efi_status_t
+(EFI_API *efi_file_set_info) (
+		IN efi_file_proto_t		*this
+		IN efi_guid_t			*info_type,
+		IN OUT uint64_t			buffer_size,
+		OUT void				*buffer
+		)
+
 typedef struct efi_file_proto_t {
 	uint64_t				revision;
 	efi_file_open			open;
@@ -94,8 +110,8 @@ typedef struct efi_file_proto_t {
 	efi_file_write			write;
 	efi_file_get_position	get_position;
 	efi_file_set_position	set_position;
-	void					*get_info;
-	void					*set_info;
+	efi_file_get_info		get_info;
+	efi_file_set_info		set_info;
 	void					*flush;
 	void					*unused1;
 	void					*unused2;
@@ -113,6 +129,17 @@ typedef struct efi_filesystem_proto_t {
 	uint64_t							revision;
 	efi_filesystem_proto_open_volume	open_volume;
 } efi_filesystem_proto_t;
+
+typedef struct {
+	uint64_t		size;
+	uint64_t		file_size;
+	uint64_t		physical_size;
+	efi_time_t		create_time;
+	efi_time_t		last_access_time;
+	efi_time_t		modified_time;
+	uint64_t		attribute;
+	char16_t		file_name[256];
+} efi_file_info_t;
 
 typedef struct {
 	uint32_t	time_low;
