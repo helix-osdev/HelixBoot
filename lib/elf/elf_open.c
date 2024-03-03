@@ -53,6 +53,7 @@ elf_fd_t *elf_open(char16_t *name) {
 	if (EFI_ERROR(ret)) {
 		printf(L"Invalid ELF executable: %s! (%r)\n", fd->elf_info->file_name, ret);
 
+		// Cleanup data
 		free(fd->elf_info);
 		free(fd->elf_data);
 		return NULL;

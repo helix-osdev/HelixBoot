@@ -16,14 +16,17 @@ efi_status_t elf_check(void *buf) {
 	}
 
 	if (hdr->e_machine != EM_AARCH64) {
+		printf(L"elf: unsupported architecture!\n");
 		return EFI_UNSUPPORTED;
 	}
 
 	if (hdr->e_ident[EI_CLASS] != ELFCLASS64) {
+		printf(L"elf: 32-bit ELF not supported!\n");
 		return EFI_UNSUPPORTED;
 	}
 
 	if (hdr->e_ident[EI_DATA] != ELFDATALSB) {
+		printf(L"elf: unsupported byte order!\n");
 		return EFI_UNSUPPORTED;
 	}
 
