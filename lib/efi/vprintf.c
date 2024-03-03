@@ -1,4 +1,5 @@
 #include <efi.h>
+#include <elf/elf.h>
 #include <devices/uart.h>
 
 
@@ -75,6 +76,35 @@ efi_status_t vprintf(char16_t *fmt, va_list args) {
 					itoa(n5, buf, 16);
 					uart_puts(buf);
 
+					fmt++;
+					break;
+
+				case 'e':
+					uint64_t elf_err = va_arg(args, uint64_t);
+					
+					switch(elf_err) {
+						case ET_NONE:
+							strcpy(buf, L"None");
+							break;
+
+						case ET_EXEC:
+							strcpy(buf, L"Executable");
+							break;
+
+						case ET_DYN:
+							strcpy(buf, L"Dynamic");
+							break;
+
+						case ET_REL:
+							strcpy(buf, L"Relocatable");
+							break;
+						
+						default:
+							strcpy(buf, L"Unknown");
+							break;
+					}
+
+					uart_puts(buf);
 					fmt++;
 					break;
 
