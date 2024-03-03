@@ -13,6 +13,7 @@ typedef struct efi_configuration_table_t efi_configuration_table_t;
 typedef struct efi_memory_descriptor_t efi_memory_descriptor_t;
 typedef struct efi_time_t efi_time_t;
 typedef struct efi_guid_t efi_guid_t;
+typedef struct efi_file_info_t efi_file_info_t;
 typedef struct efi_time_capabilities_t efi_time_capabilities_t;
 typedef struct efi_loaded_image_proto_t efi_loaded_image_proto_t;
 typedef struct efi_system_table_t efi_system_table_t;
@@ -171,9 +172,12 @@ typedef struct efi_file_info_t {
 	efi_time_t		create_time;
 	efi_time_t		last_access_time;
 	efi_time_t		modified_time;
-	uint64_t		attribute;
-	char16_t		file_name[256];
+	uint64_t		attributes;
+	char16_t		file_name[1];
 } efi_file_info_t;
+
+#define SIZE_OF_EFI_FILE_INFO \
+	EFI_FIELD_OFFSET(efi_file_info_t, file_name)
 
 #define EFI_GLOBAL_VARIABLE \
 	{0x8BE4DF61, 0x93CA, 0x11d2, \

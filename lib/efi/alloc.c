@@ -53,3 +53,32 @@ void *alloc_pages(uint64_t length) {
 
 	return buf;
 }
+
+bool grow_buffer(efi_status_t *ret, void **buf, uint64_t length) {
+	bool retry = false;
+
+	if (!*buf && length) {
+		*ret = EFI_BUFFER_TOO_SMALL;
+	}
+
+	if (*ret == EFI_BUFFER_TOO_SMALL) {
+		if (*buf) {
+			free(*buf);
+		}
+
+		*buf = alloc(length);
+
+		if (*buf) {
+			retry = true;
+		} else {
+			*ret = EFI_OUT_OF_RESOURCES;
+		}
+	}
+
+	if (!retry && EFI_ERROR(*ret) && *buf) {
+		free(*buf);
+		*buf = NULL;
+	}
+
+	return retry;
+}

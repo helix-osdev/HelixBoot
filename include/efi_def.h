@@ -86,6 +86,9 @@
 #define EFI_SIZE_TO_PAGES(x) \
 	(((x) >> EFI_PAGE_SHIFT) + ((x) & EFI_PAGE_MASK ? 1 : 0))
 
+#define EFI_FIELD_OFFSET(type, field) \
+	((uint64_t)(intptr_t)(&(((type *)0)->field)))
+
 typedef char		char8_t;
 typedef wchar_t 	char16_t;
 
