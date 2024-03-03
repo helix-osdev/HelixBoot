@@ -12,6 +12,7 @@ typedef struct efi_text_output_proto_t efi_text_output_proto_t;
 typedef struct efi_configuration_table_t efi_configuration_table_t;
 typedef struct efi_memory_descriptor_t efi_memory_descriptor_t;
 typedef struct efi_time_t efi_time_t;
+typedef struct efi_guid_t efi_guid_t;
 typedef struct efi_time_capabilities_t efi_time_capabilities_t;
 typedef struct efi_loaded_image_proto_t efi_loaded_image_proto_t;
 typedef struct efi_system_table_t efi_system_table_t;
@@ -95,11 +96,11 @@ typedef efi_status_t
 
 typedef efi_status_t
 (EFI_API *efi_file_set_info) (
-		IN efi_file_proto_t		*this
+		IN efi_file_proto_t		*this,
 		IN efi_guid_t			*info_type,
 		IN OUT uint64_t			buffer_size,
 		OUT void				*buffer
-		)
+		);
 
 typedef struct efi_file_proto_t {
 	uint64_t				revision;
@@ -130,18 +131,7 @@ typedef struct efi_filesystem_proto_t {
 	efi_filesystem_proto_open_volume	open_volume;
 } efi_filesystem_proto_t;
 
-typedef struct {
-	uint64_t		size;
-	uint64_t		file_size;
-	uint64_t		physical_size;
-	efi_time_t		create_time;
-	efi_time_t		last_access_time;
-	efi_time_t		modified_time;
-	uint64_t		attribute;
-	char16_t		file_name[256];
-} efi_file_info_t;
-
-typedef struct {
+typedef struct efi_guid_t {
 	uint32_t	time_low;
 	uint16_t	time_mid;
 	uint16_t	time_and_ver;
@@ -149,6 +139,20 @@ typedef struct {
 	uint8_t		clock_seq_low;
 	uint8_t		node[6];
 } efi_guid_t;
+
+typedef struct efi_time_t {
+	uint16_t	year;
+	uint8_t		month;
+	uint8_t		day;
+	uint8_t		hour;
+	uint8_t		minute;
+	uint8_t		second;
+	uint8_t		__padding0;
+	uint32_t	nano_second;
+	uint16_t	time_zone;
+	uint8_t		day_light;
+	uint8_t		__padding1;
+} efi_time_t;
 
 typedef struct {
 	uint64_t 	scan_code;
@@ -159,6 +163,17 @@ typedef struct efi_configuration_table_t {
 	efi_guid_t		vendor_guid;
 	void			*vendor_table;
 } efi_configuration_table_t;
+
+typedef struct efi_file_info_t {
+	uint64_t		size;
+	uint64_t		file_size;
+	uint64_t		physical_size;
+	efi_time_t		create_time;
+	efi_time_t		last_access_time;
+	efi_time_t		modified_time;
+	uint64_t		attribute;
+	char16_t		file_name[256];
+} efi_file_info_t;
 
 #define EFI_GLOBAL_VARIABLE \
 	{0x8BE4DF61, 0x93CA, 0x11d2, \
@@ -651,20 +666,6 @@ typedef struct efi_time_capabilities_t {
 	uint32_t		accuracy;
 	bool			sets_to_zero;
 } efi_time_capabilities_t;
-
-typedef struct efi_time_t {
-	uint16_t	year;
-	uint8_t		month;
-	uint8_t		day;
-	uint8_t		hour;
-	uint8_t		minute;
-	uint8_t		second;
-	uint8_t		__padding0;
-	uint32_t	nano_second;
-	uint16_t	time_zone;
-	uint8_t		day_light;
-	uint8_t		__padding1;
-} efi_time_t;
 
 typedef struct {
 	uint64_t	signature;
