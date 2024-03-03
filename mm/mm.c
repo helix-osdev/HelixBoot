@@ -47,14 +47,13 @@ efi_status_t get_memory_map(efi_memory_map_t *m) {
 		return ret;
 	}
 
-	map_size += 8192;
-	map = alloc(map_size);
-
-	ret = BS->get_memory_map(&map_size,
-			map,
-			&map_key,
-			&desc_size,
-			&desc_ver);
+	while(grow_buffer(&ret, (void **)&map, map_size)) {
+		ret = BS->get_memory_map(&map_size,
+				map,
+				&map_key,
+				&desc_size,
+				&desc_ver);
+	}
 
 	if (EFI_ERROR(ret)) {
 		printf(L"Failed to get memory map! (%r)\n", ret);
@@ -109,23 +108,13 @@ efi_status_t exit_boot_services(efi_handle_t img_handle, efi_memory_map_t *m) {
 		return ret;
 	}
 
-	do {
-		// Grow buffer to new size
-		map_size += 2 * desc_size;
-
-		if (map) {
-			free(map);
-		}
-
-		map = alloc(map_size);
-
+	while(grow_buffer(&ret, (void **)&map, map_size)) {
 		ret = BS->get_memory_map(&map_size,
 				map,
 				&map_key,
 				&desc_size,
 				&desc_ver);
-
-	} while(ret == EFI_BUFFER_TOO_SMALL);
+	}
 
 	ret = BS->exit_boot_services(img_handle, map_key);
 
