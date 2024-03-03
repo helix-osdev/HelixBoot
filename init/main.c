@@ -10,6 +10,7 @@
 
 
 efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
+	elf_fd_t *fd = NULL;
 
 	initialize_libs(img_handle, sys_tbl);
 	clear_screen();
@@ -27,6 +28,8 @@ efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
 	printf(L"Firmware vendor: %s\n", ST->firmware_vendor);
 
 	get_boot_vol(img_handle);
+
+	fd = elf_open(L"kernel.elf");
 
 	while(1);
 }
