@@ -9,5 +9,8 @@
 
 
 elf_fd_t *elf_open(char16_t *name);
+void elf_close(elf_fd_t *fd);
+
+efi_status_t elf_check(void *buf);
 
 #endif

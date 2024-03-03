@@ -8,6 +8,7 @@
 
 
 elf_fd_t *elf_open(char16_t *name) {
+	efi_status_t ret = 0;
 	elf_fd_t *fd = alloc(sizeof(elf_fd_t));
 	uint64_t file_size = 0;
 
@@ -45,6 +46,17 @@ elf_fd_t *elf_open(char16_t *name) {
 	// After the ELF file is read into memory we
 	// no longer need the file descriptor to be open
 	fclose(fd->elf_fd);
+
+	// Validate ELF executable
+	ret = elf_check(fd->elf_data);
+
+	if (EFI_ERROR(ret)) {
+		printf(L"Invalid ELF executable: %s! (%r)\n", fd->elf_info->file_name, ret);
+
+		free(fd->elf_info);
+		free(fd->elf_data);
+		return NULL;
+	}
 
 	return fd;
 }

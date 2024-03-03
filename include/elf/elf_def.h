@@ -141,8 +141,7 @@ typedef struct {
 
 typedef struct {
 	efi_file_proto_t	*elf_fd;
-	uint64_t			elf_entry;
-	uint64_t			elf_size;
+	efi_file_info_t		*elf_info;
 	void				*elf_data;
 } elf_fd_t;
 
