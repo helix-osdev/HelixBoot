@@ -22,4 +22,5 @@ target_sources(${HELIX_TARGET} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/free.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/toupper.c"
 	"${CMAKE_CURRENT_SOURCE_DIR}/tolower.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/file_info.c"
 )
