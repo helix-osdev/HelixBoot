@@ -65,6 +65,8 @@
 
 #define SHT_NULL		0x00000000
 #define SHT_PROGBITS	0x00000001
+#define SHT_SYMTAB		0x00000002
+#define SHT_STRTAB		0x00000003
 #define SHT_RELA    	0x00000004
 #define SHT_NOBITS		0x00000008
 #define SHT_REL			0x00000009
@@ -142,7 +144,7 @@ typedef struct {
 typedef struct {
 	efi_file_proto_t	*elf_fd;
 	efi_file_info_t		*elf_info;
-	void				*elf_data;
+	elf64_ehdr_t		*elf_hdr;
 } elf_fd_t;
 
 #endif
