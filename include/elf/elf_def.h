@@ -66,6 +66,7 @@ typedef elf64_half_t elf64_versym_t;
 #define PF_W	0x2
 #define PF_X	0x1
 
+#define PT_NULL		0x00000000
 #define PT_LOAD     0x00000001
 #define PT_DYNAMIC  0x00000002
 #define PT_INTERP   0x00000003
