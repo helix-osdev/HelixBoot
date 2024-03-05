@@ -9,12 +9,11 @@
 
 elf_fd_t *elf_open(char16_t *name) {
 	efi_status_t ret = 0;
-	elf_fd_t *fd = alloc(sizeof(elf_fd_t));
-
-
+	elf_fd_t *fd = elf_alloc(sizeof(elf_fd_t));
 
 
 	if (!fd) {
+		printf(L"elf: out of resources!\n");
 		return NULL;
 	}
 
@@ -32,7 +31,7 @@ elf_fd_t *elf_open(char16_t *name) {
 		return NULL;
 	}
 
-	fd->elf_hdr = alloc(sizeof(elf64_ehdr_t));
+	fd->elf_hdr = elf_alloc(sizeof(elf64_ehdr_t));
 
 	if (!fd->elf_hdr) {
 		printf(L"elf: out of resources!\n");

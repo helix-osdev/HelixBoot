@@ -13,11 +13,11 @@ void elf_close(elf_fd_t *fd) {
 		}
 
 		if (fd->elf_hdr) {
-			free(fd->elf_hdr);
+			elf_free(fd->elf_hdr);
 		}
 
 		if (fd->elf_info) {
-			free(fd->elf_info);
+			elf_free(fd->elf_info);
 		}
 	}
 }

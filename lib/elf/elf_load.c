@@ -13,6 +13,7 @@ efi_status_t elf_load(elf_fd_t *fd) {
 	efi_status_t ret = 0;
 	elf64_ehdr_t *hdr = (elf64_ehdr_t *)fd->elf_hdr;
 	elf64_shdr_t *shdr = NULL;
+	elf64_phdr_t *phdr = NULL;
 
 
 
@@ -33,16 +34,24 @@ efi_status_t elf_load(elf_fd_t *fd) {
 					continue;
 				}
 
-				if (shdr->sh_flags & SHF_ALLOC) {
-					// Allocate section
-					void *buf = alloc(shdr->sh_size);
-					memset(buf, 0, shdr->sh_size);
+				switch(shdr->sh_flags) {
+					case SHF_ALLOC:
+						// Allocate section
+						void *buf = alloc(shdr->sh_size);
+						memset(buf, 0, shdr->sh_size);
 
-					elf64_off_t hdr_off = (elf64_off_t)hdr;
-					elf64_off_t buf_off = (elf64_off_t)buf;
+						elf64_off_t hdr_off = (elf64_off_t)hdr;
+						elf64_off_t buf_off = (elf64_off_t)buf;
 
-					// Set offset to allocated buffer
-					shdr->sh_offset = hdr_off - buf_off;
+						// Set offset to allocated buffer
+						shdr->sh_offset = hdr_off - buf_off;
+					case SHF_WRITE:
+						// TODO:
+						// Map as writable
+						break;
+
+					default:
+						break;
 				}
 
 				break;
