@@ -38,45 +38,39 @@ efi_status_t elf_load_shdr(elf_fd_t *fd, elf64_shdr_t *shdr) {
 	void *buf = NULL;
 
 
-	for (uint64_t i = 0; i < hdr->e_shnum; i++) {
-		shdr = elf_for_each_shdr(fd, i);
 
-		switch(shdr->sh_type) {
-			case SHT_NOBITS:
-				if (shdr->sh_size <= 0) {
-					// NULL segment
-					continue;
-				}
+	switch(shdr->sh_type) {
+		case SHT_NOBITS:
+			sh_size = shdr->sh_size;
+			buf = elf_alloc(sh_size);
 
-				sh_size = shdr->sh_size;
-				hdr_off = (elf64_off_t)hdr;
-				buf_off = (elf64_off_t)buf;
+			if (!buf) {
+				printf(L"elf: out of resources!\n");
+				return EFI_LOAD_ERROR;
+			}
 
-				switch(shdr->sh_flags) {
-					case SHF_ALLOC:
-						// Allocate section
-						buf = elf_alloc(sh_size);
-						memset(buf, 0, sh_size);
+			hdr_off = (elf64_off_t)hdr;
+			buf_off = (elf64_off_t)buf;
 
-						printf(L"buf_off = %x\n", buf_off);
+			switch(shdr->sh_flags) {
+				case SHF_ALLOC:
+					// Allocate section
+					buf = elf_alloc(sh_size);
+					memset(buf, 0, sh_size);
 
-						// Set offset to allocated buffer
-						shdr->sh_offset = hdr_off - buf_off;
-					case SHF_WRITE:
-						// TODO:
-						// Map as writable
-						break;
+					// Set offset to allocated buffer
+					shdr->sh_offset = hdr_off - buf_off;
 
-					default:
-						break;
-				}
+					break;
 
-				break;
+				default:
+					break;
+			}
 
-			default:
-				break;
-		
-		}
+			break;
+
+		default:
+			break;
 	}
 
 	return EFI_SUCCESS;
