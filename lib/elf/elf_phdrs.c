@@ -9,7 +9,7 @@
 
 
 
-elf64_phdr_t *elf_for_each_phdr(elf_fd_t *fd, uint64_t index) {
+elf64_phdr_t *elf_for_each_phdr(elf_fd_t *fd, elf64_xword_t index) {
 	elf64_ehdr_t *hdr = (elf64_ehdr_t *)fd->elf_hdr;
 	elf64_phdr_t *phdr = NULL;
 	elf64_off_t offset = 0;
@@ -48,14 +48,14 @@ efi_status_t elf_load_phdr(elf_fd_t *fd, elf64_phdr_t *phdr) {
 				// NULL segment
 				return EFI_NOT_FOUND;
 			}
-
+			
 			file_size = phdr->p_filesz;
 			segment_size = phdr->p_memsz;
-			segment_pages = EFI_SIZE_TO_PAGES(segment_size);
 			segment = (elf64_addr_t *)phys_base;
 
 			// Read program header into it's physical
-			// address space
+			// address space. This will later be get
+			// identity-mapped into a new page table
 			fseek(fd->elf_fd, phdr->p_offset);
 			fread(fd->elf_fd, (elf64_addr_t *)segment, phdr->p_filesz);
 
