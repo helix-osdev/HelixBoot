@@ -37,7 +37,7 @@ efi_status_t paging_init(efi_memory_map_t *m) {
 
 		switch(md->type) {
 			case EfiConventionalMemory:
-				// It will the first entry
+				// It will be the first entry
 				if (ram_base == 0) {
 					ram_base = md->physical_start;
 					ram_size = md->number_of_pages * 4096;
