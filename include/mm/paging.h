@@ -56,13 +56,10 @@
 
 
 
-typedef struct {
-	uint64_t pt[MAX_PT_SIZE];
-} page_table_t;
 
 
 
-void paging_init(efi_memory_map_t *m);
+efi_status_t paging_init(efi_memory_map_t *m);
 
 void mmu_enable(void);
 void mmu_disable(void);
