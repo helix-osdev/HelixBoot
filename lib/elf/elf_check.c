@@ -12,6 +12,7 @@ efi_status_t elf_check(elf_fd_t *fd) {
 			hdr->e_ident[EI_MAG2] != ELFMAG2 &&
 			hdr->e_ident[EI_MAG3] != ELFMAG3) {
 
+		printf(L"elf: invalid magic!\n");
 		return EFI_UNSUPPORTED;
 	}
 
@@ -27,6 +28,14 @@ efi_status_t elf_check(elf_fd_t *fd) {
 
 	if (hdr->e_ident[EI_DATA] != ELFDATALSB) {
 		printf(L"elf: unsupported byte order!\n");
+		return EFI_UNSUPPORTED;
+	}
+
+	if (hdr->e_type != ET_EXEC ||
+			hdr->e_type != ET_DYN ||
+			hdr->e_type != ET_REL) {
+		
+		printf(L"elf: invalid ELF type!\n");
 		return EFI_UNSUPPORTED;
 	}
 
