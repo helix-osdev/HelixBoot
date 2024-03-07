@@ -5,7 +5,7 @@
 
 
 
-static bool boot_services_exited = false;
+bool boot_services_exited = false;
 
 
 
@@ -116,11 +116,20 @@ efi_status_t exit_boot_services(efi_handle_t img_handle, efi_memory_map_t *m) {
 				&desc_ver);
 	}
 
+	// Before we can exit UEFI we need to make sure that
+	// the following task has completed	
+	if (EFI_ERROR(ret)) {
+		boot_services_exited = false;
+		printf(L"Failed to grow memory map before exit!\n");
+		return ret;
+	}
+
 	ret = BS->exit_boot_services(img_handle, map_key);
 
+	// Ensure we actually exited...
 	if (EFI_ERROR(ret)) {
-		printf(L"Failed to exit boot services! (%r)\n", ret);
 		boot_services_exited = false;
+		printf(L"Failed to exit boot services! (%r)\n", ret);
 		return ret;
 	}
 
