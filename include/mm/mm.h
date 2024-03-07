@@ -4,6 +4,10 @@
 #include <efi.h>
 
 
+extern bool boot_services_exited;
+
+
+
 #define L0_SHIFT	39
 #define L1_SHIFT	30
 #define L2_SHIFT	21
