@@ -29,7 +29,7 @@ efi_status_t paging_init(efi_memory_map_t *m) {
 
 	if (!m) {
 		return EFI_OUT_OF_RESOURCES;
-	}
+	}	
 
 	// Find RAM base to place new page tables
 	for (uint64_t i = 0; i < m->max_entries; i++) {
@@ -41,6 +41,9 @@ efi_status_t paging_init(efi_memory_map_t *m) {
 				if (ram_base == 0) {
 					ram_base = md->physical_start;
 					ram_size = md->number_of_pages * 4096;
+
+					// Page table base 64KB before the
+					// end of this region
 					pt_base = ram_base + ram_size - 65536;
 				}
 
@@ -64,6 +67,26 @@ efi_status_t paging_init(efi_memory_map_t *m) {
 	memset(pgd, 0, 0x200);
 	memset(pud, 0, 0x200);
 	memset(pmd, 0, 0x200);
+
+	pgd[0] = 0x00000000;
+	pgd[0] |= PT_VALID | PT_AF | PT_DEVICE_nGnRnE;
+
+	pgd[1] = 0x40000000;
+	pgd[1] |= PT_VALID | PT_AF;
+
+	/*
+	pgd[2] = 0x00000000;
+	pgd[2] |= PT_VALID | PT_AF | PT_DEVICE_nGnRnE | PT_KERNEL;
+
+	pgd[3] = 0x40000000;
+	pgd[3] |= PT_VALID | PT_AF | PT_KERNEL;
+	*/
+
+	// Flush ROM region
+	flush_cache_range(0x00000000, 0x40000000);
+
+	// Flush cache region
+	flush_cache_range(ram_base, ram_size);
 
 	return EFI_SUCCESS;
 }
@@ -100,4 +123,9 @@ void mmu_disable(void) {
 
 void flush_cache_range(uint64_t base_addr, uint64_t length) {
 	__flush_cache_range(base_addr, length);
+}
+
+void update_page_tables(void) {
+	set_ttbr0((uint64_t)pgd);
+	set_ttbr1((uint64_t)pgd);
 }

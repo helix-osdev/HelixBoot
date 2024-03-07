@@ -61,9 +61,13 @@
 
 efi_status_t paging_init(efi_memory_map_t *m);
 
+void map_page(uint64_t vaddr, uint64_t paddr, uint64_t length, uint64_t attrs);
+
 void mmu_enable(void);
 void mmu_disable(void);
 
 void flush_cache_range(uint64_t base_addr, uint64_t length);
+
+void update_page_tables(void);
 
 #endif

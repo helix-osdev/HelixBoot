@@ -75,6 +75,9 @@
 
 
 
+#define nop() ({\
+		__asm__ volatile("nop\n\t");\
+		})
 
 #define dsb(op) ({\
 		__asm__ volatile("dsb " #op);\
