@@ -29,15 +29,7 @@ efi_status_t elf_check(elf_fd_t *fd) {
 	if (hdr->e_ident[EI_DATA] != ELFDATALSB) {
 		printf(L"elf: unsupported byte order!\n");
 		return EFI_UNSUPPORTED;
-	}
-
-	if (hdr->e_type != ET_EXEC ||
-			hdr->e_type != ET_DYN ||
-			hdr->e_type != ET_REL) {
-		
-		printf(L"elf: invalid ELF type!\n");
-		return EFI_UNSUPPORTED;
-	}
+	}	
 
 	return EFI_SUCCESS;
 }

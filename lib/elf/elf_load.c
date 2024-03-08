@@ -38,13 +38,13 @@ efi_status_t elf_load(elf_fd_t *fd) {
 				}
 			}
 
-			for (uint64_t i = 0; i < hdr->e_shnum; i++) {
-				shdr = elf_for_each_shdr(fd, i);
+			for (uint64_t j = 0; j < hdr->e_shnum; j++) {
+				shdr = elf_for_each_shdr(fd, j);
 
 				ret = elf_load_shdr(fd, shdr);
 
 				if (EFI_ERROR(ret)) {
-					printf(L"elf: failed to load shdr segment @ index %u\n", i);
+					printf(L"elf: failed to load shdr segment @ index %u\n", j);
 					return ret;
 				}
 			}
