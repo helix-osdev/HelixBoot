@@ -83,7 +83,8 @@ efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
 	mmu_enable();
 	isb();
 
-	printf(L"Done!\n");
+	// We're ready pass control to the kernel
+	elf_exec(fd);
 
 	while(1);
 }
