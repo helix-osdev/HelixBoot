@@ -3,6 +3,7 @@
 #include <mm/paging.h>
 #include <elf/elf.h>
 #include <arch/asm.h>
+#include <bootinfo.h>
 #include <devices/disk.h>
 #include <devices/uart.h>
 
@@ -14,6 +15,7 @@
 efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
 	elf_fd_t *fd = NULL;
 	efi_memory_map_t m;
+	bootinfo_t boot_info;
 
 	initialize_libs(img_handle, sys_tbl);
 	clear_screen();
@@ -34,11 +36,11 @@ efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
 	get_boot_vol(img_handle);
 
 	printf(L"Loading kernel...\n");
-	fd = elf_open(L"kernel.elf");
+	fd = elf_open(L"\\HelixOS\\kernel.elf");
 	elf_load(fd);
 
 	printf(L"Exiting boot services...\n");
-	exit_boot_services(img_handle, &m);
+	exit_boot_services(img_handle, &m, &boot_info);
 
 	// Things from this point forward will be a bit
 	// quick and dirty just to get the kernel into
@@ -84,7 +86,7 @@ efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
 	isb();
 
 	// We're ready pass control to the kernel
-	elf_exec(fd);
+	elf_exec(fd, &boot_info);
 
 	while(1);
 }
