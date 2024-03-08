@@ -61,16 +61,16 @@ efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
 
 	set_mair(0xFF44);
 
-	uint64_t tcr = read_tcr();
-	tcr |= TCR_T0SZ(39);
+	uint64_t tcr = 0x19;
 	tcr |= TCR_IRGN0_WBWA;
 	tcr |= TCR_ORGNO_WBWA;
 	tcr |= TCR_SH0_ISH;
+	tcr |= TCR_TG0_4K;
 
-	tcr |= TCR_T1SZ(39);
 	tcr |= TCR_IRGN1_WBWA;
 	tcr |= TCR_ORGN1_WBWA;
 	tcr |= TCR_SH1_ISH;
+	tcr |= TCR_TG1_4K;
 	tcr |= TCR_EPD1_ENABLE;
 	set_tcr(tcr);
 	isb();

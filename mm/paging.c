@@ -1,9 +1,9 @@
 #include <efi.h>
 #include <mm/mm.h>
 #include <mm/paging.h>
-
 #include <arch/asm.h>
 #include <arch/cache.h>
+#include <devices/disk.h>
 
 
 
@@ -69,18 +69,16 @@ efi_status_t paging_init(efi_memory_map_t *m) {
 	memset(pmd, 0, 0x200);
 
 	pgd[0] = 0x00000000;
-	pgd[0] |= PT_VALID | PT_AF | PT_DEVICE_nGnRnE;
+	pgd[0] |= PT_VALID | PT_AF | PT_DEVICE_nGnRnE | PT_AP_RW;
 
 	pgd[1] = 0x40000000;
-	pgd[1] |= PT_VALID | PT_AF;
+	pgd[1] |= PT_VALID | PT_AF | PT_AP_RW;
 
-	/*
 	pgd[2] = 0x00000000;
-	pgd[2] |= PT_VALID | PT_AF | PT_DEVICE_nGnRnE | PT_KERNEL;
+	pgd[2] |= PT_VALID | PT_AF | PT_DEVICE_nGnRnE | PT_AP_RW | PT_KERNEL;
 
 	pgd[3] = 0x40000000;
-	pgd[3] |= PT_VALID | PT_AF | PT_KERNEL;
-	*/
+	pgd[3] |= PT_VALID | PT_AF | PT_AP_RW | PT_KERNEL;
 
 	// Flush ROM region
 	flush_cache_range(0x00000000, 0x40000000);
