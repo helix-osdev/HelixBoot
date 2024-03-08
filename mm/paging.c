@@ -85,7 +85,7 @@ efi_status_t paging_init(efi_memory_map_t *m) {
 	// Flush ROM region
 	flush_cache_range(0x00000000, 0x40000000);
 
-	// Flush cache region
+	// Flush free RAM region
 	flush_cache_range(ram_base, ram_size);
 
 	return EFI_SUCCESS;
