@@ -2,6 +2,7 @@
 #include <mm/mm.h>
 #include <arch/asm.h>
 #include <devices/disk.h>
+#include <bootinfo.h>
 
 
 
@@ -68,10 +69,38 @@ efi_status_t get_memory_map(efi_memory_map_t *m) {
 	m->map = map;
 	m->max_entries = (map_size / desc_size);
 
+	for (uint64_t i = 0; i < m->max_entries; i++) {
+		efi_memory_descriptor_t *md = ((efi_memory_descriptor_t *)((uint64_t)m->map + (i * m->desc_size)));
+		
+		switch(md->type) {
+			case EfiLoaderData:
+				printf(L"LoaderCode phys: %x\n", md->physical_start);
+				break;
+
+			case EfiLoaderCode:
+				printf(L"LoaderData phys: %x\n", md->physical_start);
+				break;
+
+			case EfiBootServicesCode:
+				printf(L"BootCode phys: %x\n", md->physical_start);
+				break;
+
+			case EfiBootServicesData:
+				printf(L"BootData phys: %x\n", md->physical_start);
+				break;
+
+			case EfiConventionalMemory:
+				printf(L"Available phys: %x\n", md->physical_start);
+
+			default:
+				break;
+		}
+	}
+
 	return EFI_SUCCESS;
 }
 
-efi_status_t exit_boot_services(efi_handle_t img_handle, efi_memory_map_t *m) {
+efi_status_t exit_boot_services(efi_handle_t img_handle, efi_memory_map_t *m, bootinfo_t *info) {
 	efi_status_t ret = 0;
 	uint64_t map_size = 0, map_key, desc_size;
 	uint32_t desc_ver;
@@ -133,12 +162,21 @@ efi_status_t exit_boot_services(efi_handle_t img_handle, efi_memory_map_t *m) {
 		return ret;
 	}
 
+	boot_services_exited = true;
+
 	// Update memory map details
 	m->map_key = map_key;
 	m->map_key = map_key;
 	m->desc_size = desc_size;
 	m->desc_version = desc_ver;
 
-	boot_services_exited = true;
+	// TODO:
+	// Come up with a more clean way of adding this info
+	// to the boot info data structure... For now this
+	// will be perfectly fine...
+	info->max_entries = (m->map_size / m->desc_size);
+	info->desc_size = m->desc_size;
+	info->mm = m->map;
+
 	return EFI_SUCCESS;
 }
