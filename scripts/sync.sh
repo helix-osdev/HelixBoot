@@ -45,14 +45,16 @@ mformat \
 	-i $build_dir/hdd.img@@$efi_offset
 
 mmd \
-	-i $build_dir/hdd.img@@$efi_offset ::/EFI
-mmd \
-	-i $build_dir/hdd.img@@$efi_offset ::/EFI/BOOT
+	-i $build_dir/hdd.img@@$efi_offset ::/HelixOS
 
 mcopy \
 	-i $build_dir/hdd.img@@$efi_offset \
-	$build_dir/helix_boot.efi ::/EFI/BOOT/BOOTAA64.efi
+	$build_dir/../scripts/startup.nsh ::/
 
 mcopy \
 	-i $build_dir/hdd.img@@$efi_offset \
-	$build_dir/../kernel.elf ::/
+	$build_dir/helix_boot.efi ::/HelixOS/
+
+mcopy \
+	-i $build_dir/hdd.img@@$efi_offset \
+	$build_dir/../kernel.elf ::/HelixOS/
