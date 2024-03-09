@@ -8,10 +8,10 @@
 
 
 
-static uint64_t *pgd;
-static uint64_t *pud;
-static uint64_t *pmd;
-
+static uint64_t *l0;
+static uint64_t *l1;
+static uint64_t *l2;
+static uint64_t *l3;
 
 
 
@@ -56,26 +56,40 @@ efi_status_t paging_init(efi_memory_map_t *m) {
 	// ramdisk that was previously loaded
 	pt_base = ram_base + ram_size - 0x1000;
 
-	pgd = (uint64_t *)pt_base;
-	pud = (uint64_t *)(pt_base + 0x200);
-	pmd = (uint64_t *)(pt_base + 0x400);
+	l0 = (uint64_t *)pt_base;
+	l1 = (uint64_t *)(pt_base + 0x200);
+	l2 = (uint64_t *)(pt_base + 0x400);
+	l3 = (uint64_t *)(pt_base + 0x600);
 
 	// Clean page tables
-	memset(pgd, 0, 0x200);
-	memset(pud, 0, 0x200);
-	memset(pmd, 0, 0x200);
+	memset(l0, 0, 0x200);
+	memset(l1, 0, 0x200);
+	memset(l2, 0, 0x200);
+	memset(l3, 0, 0x200);
 
-	pgd[0] = 0x00000000;
-	pgd[0] |= PT_VALID | PT_AF | PT_DEVICE_nGnRnE | PT_AP_RW;
 
-	pgd[1] = 0x40000000;
-	pgd[1] |= PT_VALID | PT_AF | PT_AP_RW;
+	l0[0] = (uint64_t)l1;
+	l0[0] |= PT_VALID | PT_AF | PT_TABLE;
 
-	pgd[2] = 0x00000000;
-	pgd[2] |= PT_VALID | PT_AF | PT_DEVICE_nGnRnE | PT_AP_RW | PT_KERNEL;
+	uint64_t rom_idx = (0x00000000 >> L1_SHIFT) & 0x1ff;
 
-	pgd[3] = 0x40000000;
-	pgd[3] |= PT_VALID | PT_AF | PT_AP_RW | PT_KERNEL;
+	l1[rom_idx] = 0x00000000;
+	pgd[rom_idx] |= PT_VALID | PT_AF | PT_DEVICE_nGnRnE | PT_AP_RW;
+
+	uint64_t l2_idx = ((uint64_t)pud >> L1_SHIFT) & 0x1ff;
+
+	l1[l2_idx] = (uint64_t)l2;
+	l1[l2_idx] |= PT_VALID | PT_AF | PT_TABLE;
+
+	uint64_t l3_idx = ((uint64_t)l3 >> L2_SHIFT) & 0x1ff;
+
+	l2[l3_idx] = (uint64_t)l3;
+	l2[l3_idx] |= PT_VALID | PT_AF | PT_TABLE;
+
+	uint64_t ram_idx = (0x40000000 >> L3_SHIFT) & 0x1ff;
+
+	l3[ram_idx] = 0x40000000;
+	l3[ram_idx] |= PT_VALID | PT_AF | PT_AP_RW;
 
 	// Flush ROM region
 	flush_cache_range(0x00000000, 0x40000000);
@@ -121,6 +135,6 @@ void flush_cache_range(uint64_t base_addr, uint64_t length) {
 }
 
 void update_page_tables(void) {
-	set_ttbr0((uint64_t)pgd);
-	set_ttbr1((uint64_t)pgd);
+	set_ttbr0((uint64_t)l0);
+	set_ttbr1((uint64_t)l0);
 }
