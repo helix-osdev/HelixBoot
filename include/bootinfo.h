@@ -7,7 +7,6 @@
 
 typedef struct {
 	efi_memory_map_t			*mm;
-	efi_runtime_services_t		*RT;
 } __attribute__((packed)) bootinfo_t;
 
 #endif

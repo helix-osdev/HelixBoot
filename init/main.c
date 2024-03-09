@@ -42,11 +42,9 @@ efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
 	printf(L"Exiting boot services...\n");
 	exit_boot_services(img_handle, &m);
 
-	// Populate boot info data for kernel use. Right now
-	// this is just fine. I really don't care if it
-	// looks "ugly" since this is for the kernel
+	// Populate boot info data for kernel use. Do this
+	// here to ensure we exit boot services without issue
 	boot_info.mm = &m;
-	boot_info.RT = RT;
 
 	// Things from this point forward will be a bit
 	// quick and dirty just to get the kernel into
