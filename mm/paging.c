@@ -74,9 +74,9 @@ efi_status_t paging_init(efi_memory_map_t *m) {
 	uint64_t rom_idx = (0x00000000 >> L1_SHIFT) & 0x1ff;
 
 	l1[rom_idx] = 0x00000000;
-	pgd[rom_idx] |= PT_VALID | PT_AF | PT_DEVICE_nGnRnE | PT_AP_RW;
+	l1[rom_idx] |= PT_VALID | PT_AF | PT_DEVICE_nGnRnE | PT_AP_RW;
 
-	uint64_t l2_idx = ((uint64_t)pud >> L1_SHIFT) & 0x1ff;
+	uint64_t l2_idx = ((uint64_t)l2 >> L1_SHIFT) & 0x1ff;
 
 	l1[l2_idx] = (uint64_t)l2;
 	l1[l2_idx] |= PT_VALID | PT_AF | PT_TABLE;
