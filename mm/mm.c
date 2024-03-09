@@ -134,7 +134,21 @@ efi_status_t exit_boot_services(efi_handle_t img_handle, efi_memory_map_t *m) {
 		return ret;
 	}
 
+	// We're now out of UEFI! No going back!
 	boot_services_exited = true;
+
+	// This must be done for runtime services. It makes
+	// them switch from their physical address to
+	// their virtual address
+	ret = RT->set_virtual_address_map(map_size,
+			desc_size,
+			desc_ver,
+			map);
+
+	if (EFI_ERROR(ret)) {
+		printf(L"Failed to set virtual address map! (%r)\n", ret);
+		return ret;
+	}
 
 	// Update memory map details
 	m->map_key = map_key;
