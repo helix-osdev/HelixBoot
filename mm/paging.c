@@ -31,22 +31,18 @@ efi_status_t paging_init(efi_memory_map_t *m) {
 		return EFI_OUT_OF_RESOURCES;
 	}	
 
-	// Find RAM base to place new page tables
 	for (uint64_t i = 0; i < m->max_entries; i++) {
 		md = for_each_desc(m, i);
 
 		switch(md->type) {
 			case EfiConventionalMemory:
-				// It will be the first entry
 				if (ram_base == 0) {
+					// RAM base address
 					ram_base = md->physical_start;
-					ram_size = md->number_of_pages * 4096;
-
-					// Page table base 64KB before the
-					// end of this region
-					pt_base = ram_base + ram_size - 65536;
 				}
 
+				// Get all available conventional memory
+				ram_size += md->number_of_pages * 4096;
 				break;
 
 			default:
@@ -58,6 +54,7 @@ efi_status_t paging_init(efi_memory_map_t *m) {
 	// conventional memory region. This is so we don't
 	// overwrite the kernel or any potential modules or
 	// ramdisk that was previously loaded
+	pt_base = ram_base + ram_size - 0x1000;
 
 	pgd = (uint64_t *)pt_base;
 	pud = (uint64_t *)(pt_base + 0x200);
