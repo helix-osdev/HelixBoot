@@ -16,7 +16,7 @@ bool boot_services_exited = false;
 efi_memory_descriptor_t *for_each_desc(efi_memory_map_t *m, uint64_t idx) {
 	efi_memory_descriptor_t *desc = NULL;
 
-	desc = ((efi_memory_descriptor_t *)m->map + idx * m->desc_size);
+	desc = ((efi_memory_descriptor_t *)((uint64_t)m->map + (idx * m->desc_size)));
 
 	return desc;
 }
@@ -25,7 +25,7 @@ efi_status_t get_memory_map(efi_memory_map_t *m) {
 	efi_status_t ret = 0;
 	uint64_t map_size = 0, map_key, desc_size;
 	uint32_t desc_ver;
-	efi_memory_descriptor_t *map = NULL;
+	efi_memory_descriptor_t *map = NULL, *md = NULL;
 
 
 
@@ -68,34 +68,6 @@ efi_status_t get_memory_map(efi_memory_map_t *m) {
 	m->desc_version = desc_ver;
 	m->map = map;
 	m->max_entries = (map_size / desc_size);
-
-	for (uint64_t i = 0; i < m->max_entries; i++) {
-		efi_memory_descriptor_t *md = ((efi_memory_descriptor_t *)((uint64_t)m->map + (i * m->desc_size)));
-		
-		switch(md->type) {
-			case EfiLoaderData:
-				printf(L"LoaderCode phys: %x\n", md->physical_start);
-				break;
-
-			case EfiLoaderCode:
-				printf(L"LoaderData phys: %x\n", md->physical_start);
-				break;
-
-			case EfiBootServicesCode:
-				printf(L"BootCode phys: %x\n", md->physical_start);
-				break;
-
-			case EfiBootServicesData:
-				printf(L"BootData phys: %x\n", md->physical_start);
-				break;
-
-			case EfiConventionalMemory:
-				printf(L"Available phys: %x\n", md->physical_start);
-
-			default:
-				break;
-		}
-	}
 
 	return EFI_SUCCESS;
 }
