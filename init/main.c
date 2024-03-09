@@ -65,14 +65,17 @@ efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
 	dsb(sy);
 	isb();
 
-	set_mair(0xFF44);
+	set_mair(MAIR_VALUE);
 
-	uint64_t tcr = 0x19;
+	uint64_t tcr = read_tcr();
+	tcr |= TCR_T0SZ(39);
 	tcr |= TCR_IRGN0_WBWA;
 	tcr |= TCR_ORGNO_WBWA;
 	tcr |= TCR_SH0_ISH;
 	tcr |= TCR_TG0_4K;
+	tcr |= TCR_IPS_4G;
 
+	tcr |= TCR_T1SZ(39);
 	tcr |= TCR_IRGN1_WBWA;
 	tcr |= TCR_ORGN1_WBWA;
 	tcr |= TCR_SH1_ISH;
@@ -88,6 +91,8 @@ efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
 	update_page_tables();
 	mmu_enable();
 	isb();
+
+	printf(L"Done!\n");
 
 	// We're ready pass control to the kernel
 	elf_exec(fd, &boot_info);
