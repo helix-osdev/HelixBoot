@@ -100,7 +100,7 @@ efi_status_t get_memory_map(efi_memory_map_t *m) {
 	return EFI_SUCCESS;
 }
 
-efi_status_t exit_boot_services(efi_handle_t img_handle, efi_memory_map_t *m, bootinfo_t *info) {
+efi_status_t exit_boot_services(efi_handle_t img_handle, efi_memory_map_t *m) {
 	efi_status_t ret = 0;
 	uint64_t map_size = 0, map_key, desc_size;
 	uint32_t desc_ver;
@@ -169,14 +169,6 @@ efi_status_t exit_boot_services(efi_handle_t img_handle, efi_memory_map_t *m, bo
 	m->map_key = map_key;
 	m->desc_size = desc_size;
 	m->desc_version = desc_ver;
-
-	// TODO:
-	// Come up with a more clean way of adding this info
-	// to the boot info data structure... For now this
-	// will be perfectly fine...
-	info->max_entries = (m->map_size / m->desc_size);
-	info->desc_size = m->desc_size;
-	info->mm = m->map;
 
 	return EFI_SUCCESS;
 }

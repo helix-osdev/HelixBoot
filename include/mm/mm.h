@@ -19,6 +19,12 @@ typedef struct {
 } efi_memory_map_t;
 
 
+
+
+
+
+
+
 efi_status_t get_memory_map(efi_memory_map_t *m);
 efi_status_t exit_boot_services(efi_handle_t img_handle, efi_memory_map_t *m);
 efi_memory_descriptor_t *for_each_desc(efi_memory_map_t *m, uint64_t idx);

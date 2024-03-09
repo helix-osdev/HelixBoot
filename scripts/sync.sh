@@ -21,12 +21,17 @@ for i in efi_rom.img efi_vars.img hdd.img; do
 		rm -f $build_dir/$i
 
 		# Create images
+		echo "Creating ROM + HDD images..."
 		qemu-img create -f raw $build_dir/efi_rom.img 64M
 		qemu-img create -f raw $build_dir/efi_vars.img 64M
 		qemu-img create -f raw $build_dir/hdd.img 200M
+
+		echo "Installing EFI OVMF..."
+		dd if=$ext_dir/QEMU_EFI_arm64.fd of=$build_dir/efi_rom.img conv=notrunc >/dev/null 2>&1
 	fi
 done
 
+echo "Creating GPT partition table..."
 sgdisk \
 	--zap-all \
 	--new 1:0:+128M \
@@ -34,9 +39,7 @@ sgdisk \
 	--change-name 1:"EFI" \
 	$build_dir/hdd.img >/dev/null 2>&1
 
-dd if=$ext_dir/QEMU_EFI_arm64.fd \
-   of=$build_dir/efi_rom.img conv=notrunc >/dev/null 2>&1
-
+echo "Formatting boot partition..."
 mformat \
 	-T 262144 \
 	-h 16 \
@@ -44,6 +47,7 @@ mformat \
 	-H 0 \
 	-i $build_dir/hdd.img@@$efi_offset
 
+echo "Installing OS files..."
 mmd \
 	-i $build_dir/hdd.img@@$efi_offset ::/HelixOS
 
