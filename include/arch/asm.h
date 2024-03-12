@@ -5,7 +5,8 @@
 
 
 
-#define MAIR_VALUE	0xFF44
+// Normal memory + device nGnRnE
+#define MAIR_VALUE	0xFF00
 
 #define TCR_T0SZ(x) ((64 - (x)) << 5ULL)
 #define TCR_T1SZ(x) ((64 - (x)) << 16ULL)
@@ -47,12 +48,12 @@
 #define TCR_TG1_4K		(0ULL << 30ULL)
 #define TCR_TG1_64K		(1ULL << 30ULL)
 
-#define TCR_IPS_4GB		(0ULL << 32ULL)
-#define TCR_IPS_64GB	(1ULL << 32ULL)
-#define TCR_IPS_1TB		(2ULL << 32ULL)
-#define TCR_IPS_4TB		(3ULL << 32ULL)
-#define TCR_IPS_16TB	(4ULL << 32ULL)
-#define TCR_IPS_256TB	(5ULL << 32ULL)
+#define TCR_IPS_4G		(0ULL << 32ULL)
+#define TCR_IPS_64G		(1ULL << 32ULL)
+#define TCR_IPS_1T		(2ULL << 32ULL)
+#define TCR_IPS_4T		(3ULL << 32ULL)
+#define TCR_IPS_16T		(4ULL << 32ULL)
+#define TCR_IPS_256T	(5ULL << 32ULL)
 
 #define TCR_TBI0_TBNI	(0ULL << 37ULL)
 #define TCR_TBI0_TBI	(1ULL << 37ULL)
