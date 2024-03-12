@@ -3,6 +3,9 @@
 
 
 
+extern void __map_table_entry(uint64_t *pt, uint64_t virt, uint64_t shift, uint64_t flags);
+
+
 
 #define MAX_PT_SIZE 512
 
@@ -60,8 +63,6 @@
 
 
 efi_status_t paging_init(efi_memory_map_t *m);
-
-void map_page(uint64_t vaddr, uint64_t paddr, uint64_t length, uint64_t attrs);
 
 void mmu_enable(void);
 void mmu_disable(void);
