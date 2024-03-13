@@ -13,7 +13,7 @@ hdd_img="$build_dir/hdd.img"
 
 qemu="qemu-system-aarch64"
 machine="-M virt"
-mem="-m 1024M"
+mem="-m 2048M"
 cpu="-cpu cortex-a57 -smp 1"
 
 rom0="-drive if=pflash,format=raw,file=$efi_rom,index=0,readonly=on"
