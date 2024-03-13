@@ -1,4 +1,3 @@
 target_sources(${HELIX_TARGET} PRIVATE
 	"${CMAKE_CURRENT_SOURCE_DIR}/mm.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/paging.c"
 )

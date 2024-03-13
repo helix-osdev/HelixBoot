@@ -8,6 +8,11 @@
 // Normal memory + device nGnRnE
 #define MAIR_VALUE	0xFF00
 
+#define MAIR_NORMAL_MEM		0xFF
+#define MAIR_NORMAL_MEM_NC	0x44
+#define MAIR_DEVICE_NGNRNE	0x00
+#define MAIR_DEVICE_NGNRE	0x04
+
 #define TCR_T0SZ(x) ((64 - (x)) << 5ULL)
 #define TCR_T1SZ(x) ((64 - (x)) << 16ULL)
 
@@ -96,33 +101,19 @@
 		__asm__ volatile("tlbi " #op);\
 		})
 
-#define inval_page(addr) ({\
-		__asm__ volatile("dsb st\n\t"\
-						 "tlbi vale1, %0\n\t"\
-						 "dsb sy\n\t"\
-						 "isb\n\t"\
-						 :\
-						 : "r"((uint64_t)addr)\
-						 : "memory");\
-		})
 
 
+extern uint64_t __read_sctlr(void);
+extern void __set_sctlr(uint64_t sctlr);
 
+extern uint64_t __read_ttbr0(void);
+extern void __set_ttbr0(uint64_t ttbr0);
+extern uint64_t __read_ttbr1(void);
+extern void __set_ttbr1(uint64_t ttbr1);
 
-
-
-
-
-uint64_t read_sctlr(void);
-void set_sctlr(uint64_t sctlr);
-uint64_t read_tcr(void);
-void set_tcr(uint64_t tcr);
-uint64_t read_ttbr0(void);
-void set_ttbr0(uint64_t ttbr0);
-uint64_t read_ttbr1(void);
-void set_ttbr1(uint64_t ttbr1);
-uint64_t read_mair(void);
-void set_mair(uint64_t mair);
-
+extern uint64_t __read_mair(void);
+extern void __set_mair(uint64_t mair);
+extern uint64_t __read_tcr(void);
+extern void __set_tcr(uint64_t tcr);
 
 #endif
