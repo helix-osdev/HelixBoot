@@ -1,11 +1,11 @@
 #include <efi.h>
 #include <mm/mm.h>
+#include <kernel.h>
 #include <elf/elf.h>
 #include <arch/asm.h>
 #include <bootinfo.h>
 #include <devices/disk.h>
 #include <devices/uart.h>
-
 
 
 
@@ -42,8 +42,11 @@ efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
 	exit_boot_services(img_handle, &m);
 
 	// Populate boot info data for kernel use. Do this
-	// here to ensure we exit boot services without issue
+	// here to ensure we exit boot services
 	boot_info.mm = &m;
+
+	// Execute pre-kernel stage
+	__kernel_exec(&boot_info);
 
 	while(1);
 }
