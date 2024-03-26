@@ -1,6 +1,5 @@
 #include <efi.h>
 #include <mm/mm.h>
-#include <kernel.h>
 #include <elf/elf.h>
 #include <arch/asm.h>
 #include <bootinfo.h>
@@ -28,9 +27,13 @@ efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
 
 	uart_init(&cfg);
 
-	printf(L"Helix Bootloader v0.0.1\n");
-	printf(L"Firmware vendor: %s\n", ST->firmware_vendor);
+	// TODO:
+	// Create boot menu
 
+	printf(L"Helix Bootloader v0.0.1\n");
+	printf(L"Firmwarevendor: %s\n", ST->firmware_vendor);
+
+/*
 	get_memory_map(&m);
 	get_boot_vol(img_handle);
 
@@ -44,9 +47,7 @@ efi_status_t helix_main(efi_handle_t img_handle, efi_system_table_t *sys_tbl) {
 	// Populate boot info data for kernel use. Do this
 	// here to ensure we exit boot services
 	boot_info.mm = &m;
-
-	// Execute pre-kernel stage
-	__kernel_exec(&boot_info);
+*/
 
 	while(1);
 }
