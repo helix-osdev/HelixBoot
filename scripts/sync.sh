@@ -58,3 +58,7 @@ mcopy \
 mcopy \
 	-i $build_dir/hdd.img@@$efi_offset \
 	$build_dir/helix_boot.efi ::/HelixOS/
+
+mcopy \
+	-i $build_dir/hdd.img@@$efi_offset \
+	$build_dir/../kernel.elf ::/HelixOS/
