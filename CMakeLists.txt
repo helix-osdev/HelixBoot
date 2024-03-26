@@ -34,69 +34,33 @@ endif()
 
 
 
-if(${HELIX_ARCH} STREQUAL "arm64")
-	add_executable(${HELIX_TARGET})
 
-	target_include_directories(${HELIX_TARGET} PRIVATE
-		"${HELIX_SOURCE_DIR}/include"
-	)
+add_executable(${HELIX_TARGET})
 
-	target_compile_options(${HELIX_TARGET} PRIVATE
-		-target aarch64-unknown-windows
-		-ffreestanding
-		-fshort-wchar
-		-mcpu=cortex-a57
-		-mgeneral-regs-only
-		-Wno-unused-command-line-argument
-	)
+target_include_directories(${HELIX_TARGET} PRIVATE
+	"${HELIX_SOURCE_DIR}/include"
+)
 
-	target_link_options(${HELIX_TARGET} PRIVATE
-		-target aarch64-unknown-windows
-		-nostdlib
-		-Wl,-entry:efi_main
-		-Wl,-subsystem:efi_application
-		-fuse-ld=lld-link
-	)
+target_compile_options(${HELIX_TARGET} PRIVATE
+	-target aarch64-unknown-windows
+	-ffreestanding
+	-fshort-wchar
+	-mcpu=cortex-a57
+	-mgeneral-regs-only
+	-Wno-unused-command-line-argument
+)
 
-	target_compile_definitions(${HELIX_TARGET} PRIVATE
-		-DARM64
-	)
-elseif(${HELIX_ARCH} STREQUAL "arm")
-	add_executable(${HELIX_TARGET})
-
-	target_include_directories(${HELIX_TARGET} PRIVATE
-		"${HELIX_SOURCE_DIR}/include"
-	)
-
-	target_compile_options(${HELIX_TARGET} PRIVATE
-		-target arm-unknown-windows
-		-ffreestanding
-		-fno-stack-protector
-		-fno-stack-check
-		-fshort-wchar
-		-mcpu=cortex-a15
-	)
-
-	target_link_options(${HELIX_TARGET} PRIVATE
-		-target arm-unknown-windows
-		-nostdlib
-		-Wl,-entry:efi_main
-		-Wl,-subsystem:efi_application
-		-fuse-ld=lld-link
-	)
-
-	target_compile_definitions(${HELIX_TARGET} PRIVATE
-		-DARM
-	)
-else()
-	message(FATAL_ERROR
-		"Unsupported architecture ${HELIX_ARCH}"
-	)
-endif()
+target_link_options(${HELIX_TARGET} PRIVATE
+	-target aarch64-unknown-windows
+	-nostdlib
+	-Wl,-entry:efi_main
+	-Wl,-subsystem:efi_application
+	-fuse-ld=lld-link
+)
 
 
 
-add_subdirectory(arch/${HELIX_ARCH})
+add_subdirectory(arch/arm64)
 add_subdirectory(init)
 add_subdirectory(lib)
 add_subdirectory(mm)
